@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Analysis of RAG Strategies</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Subtle Accents -->
+    <!-- Application Structure Plan: The application is structured as a narrative journey through the RAG strategies. It starts with a high-level comparison dashboard, allowing users to get an immediate sense of the trade-offs. From there, users can navigate to dedicated sections for each of the three core strategies for a "deep dive." Each deep-dive section presents the architecture visually and explains its key innovations and trade-offs. The final section visualizes the strategic roadmap. This structure was chosen to cater to two user types: the executive who wants a quick overview (the dashboard) and the technical user who wants to understand the implementation details (the deep dives). The flow is logical, moving from comparison to detail to future planning. -->
+    <!-- Visualization & Content Choices: 
+        1. Report Info: Comparative analysis of RAG strategies. Goal: Compare. Viz/Method: Interactive Radar Chart (Chart.js) and a dynamic HTML table. Interaction: Hovering over the chart reveals details, and buttons toggle the visible strategy in the table. Justification: A radar chart is excellent for comparing multiple entities across multiple quantitative axes (complexity, latency, etc.). The interactive table allows for focused, side-by-side text comparison. Library: Chart.js.
+        2. Report Info: Individual RAG architectures (Full-Stack, Metadata, GraphRAG). Goal: Organize/Inform. Viz/Method: Flow diagrams built with structured HTML and Tailwind CSS. Interaction: Key components are highlighted on hover to display tooltips with more information. Justification: HTML/CSS diagrams are lightweight, responsive, and avoid the SVG constraint, while providing a clear visual flow of the architecture. Library: Vanilla JS for interaction.
+        3. Report Info: Strategic Roadmap (Phased development). Goal: Change/Organize. Viz/Method: An interactive timeline created with HTML/CSS. Interaction: Clicking on a phase reveals detailed action items and expected outcomes. Justification: A timeline is the most intuitive way to represent a phased plan. Interactivity keeps the UI clean, showing details on demand. Library: Vanilla JS.
+        4. Report Info: Key trade-offs (e.g., Indexing Overhead vs. Retrieval Quality). Goal: Compare. Viz/Method: Bar Chart (Chart.js). Interaction: Tooltips on bars provide exact values and context. Justification: Bar charts are simple and effective for direct comparison of quantitative metrics like cost and performance. Library: Chart.js.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdfcfb;
+            color: #333;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 45vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active {
+            border-bottom-color: #a5b4fc;
+            color: #4f46e5;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 10;
+        }
+        .has-tooltip:hover .tooltip {
+            opacity: 1;
+        }
+        .phase-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .phase-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <header class="text-center mb-12">
+            <h2 class="text-4xl md:text-6xl font-bold text-blue-800 tracking-tight">Abdul Ahad Rauf</h2>
+            <h2 class="text-4xl md:text-5xl font text-gray-800 tracking-tight">An Analysis of RAG Strategies for Zuari Industries</h2>
+            <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">From Foundational Pipelines to Knowledge Graphs: A visual exploration of architectural trade-offs and future directions.</p>
+        </header>
+
+        <nav class="sticky top-0 bg-white/80 backdrop-blur-md z-10 border-b mb-12">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex justify-center items-center space-x-4 sm:space-x-8 py-4 text-sm sm:text-base font-medium text-gray-500">
+                    <a class="nav-link active" data-target="dashboard">Dashboard</a>
+                    <a class="nav-link" data-target="strategy1">Full-Stack App</a>
+                    <a class="nav-link" data-target="strategy2">Metadata-Enriched</a>
+                    <a class="nav-link" data-target="strategy3">GraphRAG</a>
+                    <a class="nav-link" data-target="roadmap">Roadmap</a>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800">Comparative Dashboard</h2>
+                    <p class="mt-2 text-md text-gray-600 max-w-2xl mx-auto">A high-level overview of the three primary RAG strategies. Use the chart to compare performance metrics and the table for a detailed feature breakdown.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <div class="chart-container mx-auto">
+                        <canvas id="strategyComparisonChart"></canvas>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm border">
+                        <h3 class="text-xl font-semibold mb-4 text-center">Strategy Trade-offs</h3>
+                        <p class="text-gray-600 text-center mb-4">This radar chart visualizes the inherent trade-offs between the RAG strategies across six key dimensions. A larger area indicates a higher value for that dimension (e.g., higher complexity or higher potential context quality). Hover over points for details.</p>
+                        <ul class="space-y-2 text-gray-700">
+                            <li><span class="font-semibold text-indigo-600">Full-Stack App:</span> Balanced and foundational, excelling in usability and low latency, but with baseline context quality.</li>
+                            <li><span class="font-semibold text-teal-600">Metadata-Enriched:</span> Sacrifices indexing speed for a significant boost in retrieval precision.</li>
+                            <li><span class="font-semibold text-amber-600">GraphRAG:</span> The most complex but offers unparalleled context richness by understanding relationships between data points.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-16">
+                     <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold text-gray-800">Feature Matrix</h3>
+                        <p class="mt-2 text-md text-gray-600 max-w-2xl mx-auto">Select a strategy to see a detailed breakdown of its architecture and key features.</p>
+                         <div id="table-controls" class="mt-4 flex justify-center space-x-2">
+                             <button data-strategy="s1" class="px-4 py-2 text-sm font-medium rounded-md bg-indigo-100 text-indigo-700">Full-Stack App</button>
+                             <button data-strategy="s2" class="px-4 py-2 text-sm font-medium rounded-md bg-gray-200 text-gray-700">Metadata-Enriched</button>
+                             <button data-strategy="s3" class="px-4 py-2 text-sm font-medium rounded-md bg-gray-200 text-gray-700">GraphRAG</button>
+                         </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border rounded-lg shadow-sm">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dimension</th>
+                                    <th id="strategy-header" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Strategy Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comparison-table-body" class="divide-y divide-gray-200">
+                                <!-- JS will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Strategy 1: Full-Stack App -->
+            <section id="strategy1" class="content-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800">Strategy 1: The Full-Stack, Personalized Assistant</h2>
+                    <p class="mt-2 text-md text-gray-600 max-w-2xl mx-auto">This foundational architecture establishes a complete, production-ready RAG application with a focus on usability, personalization, and hybrid data analysis.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <div class="bg-white p-6 rounded-lg shadow-sm border">
+                        <h3 class="text-xl font-semibold mb-4">Architectural Flow</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center p-3 bg-indigo-50 rounded-lg has-tooltip relative">
+                                <span class="text-indigo-500 mr-3">➔</span> <span>Document Ingestion (.pdf, .txt, .csv)</span>
+                                <div class="tooltip">Loads various document types from a local directory.</div>
+                            </div>
+                            <div class="text-center">↓</div>
+                            <div class="flex items-center p-3 bg-indigo-50 rounded-lg has-tooltip relative">
+                                <span class="text-indigo-500 mr-3">➔</span> <span>Text Chunking & Embedding</span>
+                                <div class="tooltip">Splits docs into smaller pieces and converts them to vectors using all-MiniLM-L6-v2.</div>
+                            </div>
+                            <div class="text-center">↓</div>
+                            <div class="flex items-center p-3 bg-indigo-50 rounded-lg has-tooltip relative">
+                                <span class="text-indigo-500 mr-3">➔</span> <span>Vector Storage (ChromaDB)</span>
+                                <div class="tooltip">Stores vector embeddings for fast retrieval.</div>
+                            </div>
+                            <div class="text-center">↓</div>
+                            <div class="flex items-center p-3 bg-indigo-50 rounded-lg has-tooltip relative">
+                                <span class="text-indigo-500 mr-3">➔</span> <span>API (FastAPI) + UI (Streamlit)</span>
+                                <div class="tooltip">User interacts via a web UI, which calls the backend API.</div>
+                            </div>
+                             <div class="text-center">↓</div>
+                            <div class="flex items-center p-3 bg-indigo-50 rounded-lg has-tooltip relative">
+                                <span class="text-indigo-500 mr-3">➔</span> <span>Hybrid Retrieval & Prompting</span>
+                                <div class="tooltip">Retrieves relevant chunks, adds user memory, and constructs a detailed prompt.</div>
+                            </div>
+                             <div class="text-center">↓</div>
+                            <div class="flex items-center p-3 bg-indigo-50 rounded-lg has-tooltip relative">
+                                <span class="text-indigo-500 mr-3">➔</span> <span>LLM Generation (Ollama)</span>
+                                <div class="tooltip">Sends the final prompt to a local LLM to generate the answer.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-8">
+                        <div class="bg-white p-6 rounded-lg shadow-sm border">
+                            <h3 class="text-xl font-semibold mb-2">Key Innovation: Personalization</h3>
+                            <p class="text-gray-600">A `/remember` endpoint allows the system to store user-specific facts (e.g., name, role). This information is injected into the prompt, transforming the generic bot into a personalized assistant that can tailor responses to the user's context.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm border">
+                            <h3 class="text-xl font-semibold mb-2">Key Innovation: CSV Analysis</h3>
+                            <p class="text-gray-600">The system includes a dedicated tool for analyzing structured data from CSV files. Instead of embedding the CSV, it passes the content directly to the LLM with a specialized prompt for analytical tasks, effectively turning the RAG system into a reasoning engine.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Strategy 2: Metadata-Enriched -->
+            <section id="strategy2" class="content-section">
+                 <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800">Strategy 2: Metadata-Enriched Retrieval</h2>
+                    <p class="mt-2 text-md text-gray-600 max-w-2xl mx-auto">This strategy enhances the data *before* it's queried, using an LLM to add rich metadata to each text chunk, thereby improving retrieval precision.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <div class="bg-white p-6 rounded-lg shadow-sm border">
+                        <h3 class="text-xl font-semibold mb-4">Enriched Ingestion Pipeline (LlamaIndex)</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center p-3 bg-teal-50 rounded-lg has-tooltip relative">
+                                <span class="text-teal-500 mr-3">➔</span> <span>Document Loading</span>
+                                <div class="tooltip">Initial document ingestion.</div>
+                            </div>
+                            <div class="text-center">↓</div>
+                            <div class="flex items-center p-3 bg-teal-50 rounded-lg has-tooltip relative">
+                                <span class="text-teal-500 mr-3">➔</span> <span>Node Parsing (Chunking)</span>
+                                <div class="tooltip">Splitting documents into nodes (chunks).</div>
+                            </div>
+                            <div class="text-center">↓</div>
+                            <div class="flex items-center p-3 bg-teal-100 rounded-lg has-tooltip relative font-semibold">
+                                <span class="text-teal-600 mr-3">➔</span> <span>LLM-Powered Metadata Extraction</span>
+                                <div class="tooltip">The core innovation: An LLM generates a title and potential questions for each node.</div>
+                            </div>
+                             <div class="text-center">↓</div>
+                            <div class="flex items-center p-3 bg-teal-50 rounded-lg has-tooltip relative">
+                                <span class="text-teal-500 mr-3">➔</span> <span>Embedding</span>
+                                <div class="tooltip">The node's text AND its new metadata are embedded together.</div>
+                            </div>
+                             <div class="text-center">↓</div>
+                            <div class="flex items-center p-3 bg-teal-50 rounded-lg has-tooltip relative">
+                                <span class="text-teal-500 mr-3">➔</span> <span>Vector Storage</span>
+                                <div class="tooltip">The enriched embeddings are stored in ChromaDB.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-8">
+                        <div class="bg-white p-6 rounded-lg shadow-sm border">
+                            <h3 class="text-xl font-semibold mb-2">The Core Trade-Off: Cost of Quality</h3>
+                            <p class="text-gray-600 mb-4">This approach significantly increases retrieval precision but at a high cost. The indexing process becomes much slower and more computationally expensive due to the multiple LLM calls required for every single text chunk.</p>
+                            <div class="chart-container mx-auto" style="height:250px; max-height: 30vh;">
+                                <canvas id="indexingOverheadChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Strategy 3: GraphRAG -->
+            <section id="strategy3" class="content-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800">Strategy 3: GraphRAG for Interconnected Knowledge</h2>
+                    <p class="mt-2 text-md text-gray-600 max-w-2xl mx-auto">This advanced strategy moves beyond simple retrieval to model the entire knowledge base as a graph, enabling the discovery of deep, distributed insights.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <div class="bg-white p-6 rounded-lg shadow-sm border">
+                        <h3 class="text-xl font-semibold mb-4">Hybrid Retrieval Process</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center p-3 bg-amber-50 rounded-lg has-tooltip relative">
+                                <span class="text-amber-500 mr-3">1.</span> <span>Query Received</span>
+                                <div class="tooltip">User submits a question.</div>
+                            </div>
+                            <div class="text-center">↓</div>
+                            <div class="flex items-center p-3 bg-amber-50 rounded-lg has-tooltip relative">
+                                <span class="text-amber-500 mr-3">2.</span> <span>Vector Search for Entry Points</span>
+                                <div class="tooltip">A standard vector search identifies the most relevant nodes to start from.</div>
+                            </div>
+                            <div class="text-center">↓</div>
+                            <div class="flex items-center p-3 bg-amber-100 rounded-lg has-tooltip relative font-semibold">
+                                <span class="text-amber-600 mr-3">3.</span> <span>Graph Traversal for Context Expansion</span>
+                                <div class="tooltip">The system "walks" the graph from the entry points, collecting connected information.</div>
+                            </div>
+                            <div class="text-center">↓</div>
+                            <div class="flex items-center p-3 bg-amber-50 rounded-lg has-tooltip relative">
+                                <span class="text-amber-500 mr-3">4.</span> <span>Synthesize Rich Context</span>
+                                 <div class="tooltip">The collected subgraph of knowledge forms a rich, interconnected context.</div>
+                            </div>
+                            <div class="text-center">↓</div>
+                            <div class="flex items-center p-3 bg-amber-50 rounded-lg has-tooltip relative">
+                                <span class="text-amber-500 mr-3">5.</span> <span>LLM Generation</span>
+                                 <div class="tooltip">The rich context is passed to the LLM to generate a comprehensive answer.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-8">
+                        <div class="bg-white p-6 rounded-lg shadow-sm border">
+                            <h3 class="text-xl font-semibold mb-2">Anatomy of the Graph</h3>
+                            <p class="text-gray-600">The knowledge graph is built with text chunks as nodes. Edges (connections) are created based on a sophisticated dual-criteria system:</p>
+                            <ul class="mt-4 space-y-2 list-disc list-inside text-gray-600">
+                                <li><span class="font-semibold">Semantic Similarity:</span> Connects chunks with very similar vector embeddings.</li>
+                                <li><span class="font-semibold">Shared Concepts:</span> Connects chunks that share named entities (like people, places) or key concepts extracted by an LLM.</li>
+                            </ul>
+                        </div>
+                         <div class="bg-white p-6 rounded-lg shadow-sm border">
+                            <h3 class="text-xl font-semibold mb-2">The Risk: Contextual Drift</h3>
+                            <p class="text-gray-600">While powerful, traversing the graph can sometimes lead to irrelevant information. A key challenge is tuning the traversal depth: too shallow, and you miss context; too deep, and you introduce noise that can confuse the LLM.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Roadmap Section -->
+            <section id="roadmap" class="content-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800">Strategic Roadmap for a Unified Architecture</h2>
+                    <p class="mt-2 text-md text-gray-600 max-w-2xl mx-auto">A proposed three-phase plan to synthesize the best elements of all strategies into a single, state-of-the-art system. Click on each phase to see details.</p>
+                </div>
+
+                <div class="relative">
+                    <!-- Timeline line -->
+                    <div class="absolute left-1/2 -ml-px w-0.5 h-full bg-gray-300"></div>
+                    
+                    <div class="space-y-16">
+                        <!-- Phase 1 -->
+                        <div class="relative phase-card-container">
+                            <div class="md:flex items-center md:space-x-8">
+                                <div class="md:w-1/2"></div>
+                                <div class="md:w-1/2">
+                                    <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 phase-card cursor-pointer" data-phase="1">
+                                        <div class="flex justify-between items-center">
+                                            <h3 class="text-xl font-bold text-indigo-600">Phase 1: Foundational Integration</h3>
+                                            <span class="text-2xl">⚙️</span>
+                                        </div>
+                                        <p class="mt-2 text-gray-600">Merge the core components into a single, stable, end-to-end system.</p>
+                                        <div id="phase-1-details" class="mt-4 text-sm text-gray-500 hidden">
+                                            <p><span class="font-semibold">Action:</span> Integrate GraphRAG indexing into the FastAPI app.</p>
+                                            <p><span class="font-semibold">Action:</span> Modify the query endpoint to use the hybrid graph retrieval process.</p>
+                                            <p><span class="font-semibold">Outcome:</span> A functional prototype serving graph-based answers through the Streamlit UI.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Phase 2 -->
+                         <div class="relative phase-card-container">
+                            <div class="md:flex items-center md:space-x-8">
+                                <div class="md:w-1/2">
+                                    <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 phase-card cursor-pointer" data-phase="2">
+                                        <div class="flex justify-between items-center">
+                                            <h3 class="text-xl font-bold text-teal-600">Phase 2: Optimization & Evaluation</h3>
+                                            <span class="text-2xl">📊</span>
+                                        </div>
+                                        <p class="mt-2 text-gray-600">Aggressively tackle performance and quality challenges with robust testing.</p>
+                                         <div id="phase-2-details" class="mt-4 text-sm text-gray-500 hidden">
+                                            <p><span class="font-semibold">Action:</span> Optimize indexing overhead (batching, faster models).</p>
+                                            <p><span class="font-semibold">Action:</span> Implement a formal evaluation framework (Precision, Recall, Faithfulness).</p>
+                                            <p><span class="font-semibold">Outcome:</span> An optimized system with quantitative evidence of its effectiveness.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="md:w-1/2"></div>
+                            </div>
+                        </div>
+
+                        <!-- Phase 3 -->
+                         <div class="relative phase-card-container">
+                            <div class="md:flex items-center md:space-x-8">
+                                <div class="md:w-1/2"></div>
+                                <div class="md:w-1/2">
+                                    <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 phase-card cursor-pointer" data-phase="3">
+                                        <div class="flex justify-between items-center">
+                                            <h3 class="text-xl font-bold text-amber-600">Phase 3: Advanced Feature Development</h3>
+                                            <span class="text-2xl">🚀</span>
+                                        </div>
+                                        <p class="mt-2 text-gray-600">Build out intelligence-driven features that leverage the unified architecture.</p>
+                                        <div id="phase-3-details" class="mt-4 text-sm text-gray-500 hidden">
+                                            <p><span class="font-semibold">Action:</span> Develop a dynamic, LLM-guided graph traversal agent.</p>
+                                            <p><span class="font-semibold">Action:</span> Formalize a multi-tool engine for choosing the best analysis method (Graph, CSV, etc.).</p>
+                                            <p><span class="font-semibold">Outcome:</span> A true reasoning engine that can select the right tool for any task.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.content-section');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    const targetId = link.getAttribute('data-target');
+
+                    navLinks.forEach(navLink => navLink.classList.remove('active'));
+                    link.classList.add('active');
+
+                    sections.forEach(section => {
+                        if (section.id === targetId) {
+                            section.classList.add('active');
+                        } else {
+                            section.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            const strategyData = {
+                s1: {
+                    name: 'Full-Stack App',
+                    color: 'rgb(79, 70, 229)',
+                    data: {
+                        'Core Framework': 'LangChain, FastAPI, Streamlit',
+                        'Primary Goal': 'End-to-end usability and feature richness.',
+                        'Retrieval Mechanism': 'Vector Similarity Search.',
+                        'Context Quality': 'Baseline: Relevant but disconnected chunks.',
+                        'Indexing Complexity': 'Low: Parsing, chunking, embedding.',
+                        'Query Latency': 'Low: Single vector search.',
+                        'Key Innovation': 'Personalization, hybrid CSV analysis.',
+                        'Ideal Use Case': 'General-purpose internal chatbot, multi-tool assistant.'
+                    }
+                },
+                s2: {
+                    name: 'Metadata-Enriched',
+                    color: 'rgb(13, 148, 136)',
+                    data: {
+                        'Core Framework': 'LlamaIndex',
+                        'Primary Goal': 'Maximize retrieval precision.',
+                        'Retrieval Mechanism': 'Vector Search on enriched text/metadata.',
+                        'Context Quality': 'High Precision: Chunks are more likely to be directly relevant.',
+                        'Indexing Complexity': 'High: Adds multiple LLM calls per chunk.',
+                        'Query Latency': 'Low: Single vector search.',
+                        'Key Innovation': 'Proactive retrieval enhancement via LLM-generated metadata.',
+                        'Ideal Use Case': 'Q&A on dense, ambiguous, or technical documents.'
+                    }
+                },
+                s3: {
+                    name: 'GraphRAG',
+                    color: 'rgb(217, 119, 6)',
+                    data: {
+                        'Core Framework': 'LlamaIndex, networkx, spaCy',
+                        'Primary Goal': 'Maximize context richness and discovery.',
+                        'Retrieval Mechanism': 'Hybrid: Vector Search + Graph Traversal.',
+                        'Context Quality': 'High Richness: Interconnected subgraph of knowledge.',
+                        'Indexing Complexity': 'Very High: Adds NER, concept extraction, graph construction.',
+                        'Query Latency': 'Moderate-to-High: Vector search + graph traversal.',
+                        'Key Innovation': 'Structural representation and traversal of knowledge.',
+                        'Ideal Use Case': 'Complex research, investigative analysis, discovering hidden connections.'
+                    }
+                }
+            };
+            
+            const tableBody = document.getElementById('comparison-table-body');
+            const tableHeader = document.getElementById('strategy-header');
+            const tableControls = document.getElementById('table-controls');
+
+            function updateTable(strategyKey) {
+                const strategy = strategyData[strategyKey];
+                tableHeader.textContent = strategy.name;
+                tableBody.innerHTML = '';
+                Object.entries(strategy.data).forEach(([key, value]) => {
+                    const row = `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${key}</td>
+                            <td class="px-6 py-4 whitespace-normal text-sm text-gray-600">${value}</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+
+                tableControls.querySelectorAll('button').forEach(btn => {
+                    if(btn.dataset.strategy === strategyKey) {
+                        btn.classList.remove('bg-gray-200', 'text-gray-700');
+                        btn.classList.add('bg-indigo-100', 'text-indigo-700');
+                    } else {
+                        btn.classList.remove('bg-indigo-100', 'text-indigo-700');
+                        btn.classList.add('bg-gray-200', 'text-gray-700');
+                    }
+                });
+            }
+
+            tableControls.addEventListener('click', (e) => {
+                if(e.target.tagName === 'BUTTON') {
+                    updateTable(e.target.dataset.strategy);
+                }
+            });
+
+            updateTable('s1');
+
+            // Chart.js Radar Chart
+            const radarCtx = document.getElementById('strategyComparisonChart').getContext('2d');
+            new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Context Quality', 'Indexing Complexity', 'Query Latency', 'Architectural Complexity', 'Flexibility', 'Precision/Richness'],
+                    datasets: [{
+                        label: 'Full-Stack App',
+                        data: [4, 2, 2, 3, 8, 4],
+                        fill: true,
+                        backgroundColor: 'rgba(79, 70, 229, 0.2)',
+                        borderColor: 'rgb(79, 70, 229)',
+                        pointBackgroundColor: 'rgb(79, 70, 229)',
+                    }, {
+                        label: 'Metadata-Enriched',
+                        data: [7, 8, 2, 5, 5, 8],
+                        fill: true,
+                        backgroundColor: 'rgba(13, 148, 136, 0.2)',
+                        borderColor: 'rgb(13, 148, 136)',
+                        pointBackgroundColor: 'rgb(13, 148, 136)',
+                    }, {
+                        label: 'GraphRAG',
+                        data: [9, 9, 7, 9, 6, 9],
+                        fill: true,
+                        backgroundColor: 'rgba(217, 119, 6, 0.2)',
+                        borderColor: 'rgb(217, 119, 6)',
+                        pointBackgroundColor: 'rgb(217, 119, 6)',
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: false
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 10,
+                             pointLabels: {
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            ticks: {
+                                backdropColor: 'transparent',
+                                stepSize: 2
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.r !== null) {
+                                        label += context.parsed.r + ' / 10';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Bar Chart for Indexing Overhead
+            const barCtx = document.getElementById('indexingOverheadChart').getContext('2d');
+            new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Standard RAG', 'Metadata-Enriched RAG'],
+                    datasets: [{
+                        label: 'Relative Indexing Cost (Time & Computation)',
+                        data: [1, 8],
+                        backgroundColor: [
+                            'rgba(79, 70, 229, 0.6)',
+                            'rgba(13, 148, 136, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgb(79, 70, 229)',
+                            'rgb(13, 148, 136)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Relative Cost' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                           display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Indexing Overhead Comparison'
+                        }
+                    }
+                }
+            });
+
+            // Roadmap interaction
+            const phaseCards = document.querySelectorAll('.phase-card');
+            phaseCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const phaseId = card.getAttribute('data-phase');
+                    const details = document.getElementById(`phase-${phaseId}-details`);
+                    details.classList.toggle('hidden');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
