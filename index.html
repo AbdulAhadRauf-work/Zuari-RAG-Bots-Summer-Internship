@@ -12,10 +12,10 @@
     <!-- Chosen Palette: Warm Neutrals with Subtle Accents -->
     <!-- Application Structure Plan: The application is structured as a narrative journey through the RAG strategies. It starts with a high-level comparison dashboard, allowing users to get an immediate sense of the trade-offs. From there, users can navigate to dedicated sections for each of the three core strategies for a "deep dive." Each deep-dive section presents the architecture visually and explains its key innovations and trade-offs. The final section visualizes the strategic roadmap. This structure was chosen to cater to two user types: the executive who wants a quick overview (the dashboard) and the technical user who wants to understand the implementation details (the deep dives). The flow is logical, moving from comparison to detail to future planning. -->
     <!-- Visualization & Content Choices: 
-        1. Report Info: Comparative analysis of RAG strategies. Goal: Compare. Viz/Method: Interactive Radar Chart (Chart.js) and a dynamic HTML table. Interaction: Hovering over the chart reveals details, and buttons toggle the visible strategy in the table. Justification: A radar chart is excellent for comparing multiple entities across multiple quantitative axes (complexity, latency, etc.). The interactive table allows for focused, side-by-side text comparison. Library: Chart.js.
-        2. Report Info: Individual RAG architectures (Full-Stack, Metadata, GraphRAG). Goal: Organize/Inform. Viz/Method: Flow diagrams built with structured HTML and Tailwind CSS. Interaction: Key components are highlighted on hover to display tooltips with more information. Justification: HTML/CSS diagrams are lightweight, responsive, and avoid the SVG constraint, while providing a clear visual flow of the architecture. Library: Vanilla JS for interaction.
-        3. Report Info: Strategic Roadmap (Phased development). Goal: Change/Organize. Viz/Method: An interactive timeline created with HTML/CSS. Interaction: Clicking on a phase reveals detailed action items and expected outcomes. Justification: A timeline is the most intuitive way to represent a phased plan. Interactivity keeps the UI clean, showing details on demand. Library: Vanilla JS.
-        4. Report Info: Key trade-offs (e.g., Indexing Overhead vs. Retrieval Quality). Goal: Compare. Viz/Method: Bar Chart (Chart.js). Interaction: Tooltips on bars provide exact values and context. Justification: Bar charts are simple and effective for direct comparison of quantitative metrics like cost and performance. Library: Chart.js.
+         1. Report Info: Comparative analysis of RAG strategies. Goal: Compare. Viz/Method: Interactive Radar Chart (Chart.js) and a dynamic HTML table. Interaction: Hovering over the chart reveals details, and buttons toggle the visible strategy in the table. Justification: A radar chart is excellent for comparing multiple entities across multiple quantitative axes (complexity, latency, etc.). The interactive table allows for focused, side-by-side text comparison. Library: Chart.js.
+         2. Report Info: Individual RAG architectures (Full-Stack, Metadata, GraphRAG). Goal: Organize/Inform. Viz/Method: Flow diagrams built with structured HTML and Tailwind CSS. Interaction: Key components are highlighted on hover to display tooltips with more information. Justification: HTML/CSS diagrams are lightweight, responsive, and avoid the SVG constraint, while providing a clear visual flow of the architecture. Library: Vanilla JS for interaction.
+         3. Report Info: Strategic Roadmap (Phased development). Goal: Change/Organize. Viz/Method: An interactive timeline created with HTML/CSS. Interaction: Clicking on a phase reveals detailed action items and expected outcomes. Justification: A timeline is the most intuitive way to represent a phased plan. Interactivity keeps the UI clean, showing details on demand. Library: Vanilla JS.
+         4. Report Info: Key trade-offs (e.g., Indexing Overhead vs. Retrieval Quality). Goal: Compare. Viz/Method: Bar Chart (Chart.js). Interaction: Tooltips on bars provide exact values and context. Justification: Bar charts are simple and effective for direct comparison of quantitative metrics like cost and performance. Library: Chart.js.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
@@ -82,9 +82,14 @@
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         <header class="text-center mb-12">
-            <h2 class="text-4xl md:text-6xl font-bold text-blue-800 tracking-tight">Abdul Ahad Rauf</h2>
-            <h2 class="text-4xl md:text-5xl font text-gray-800 tracking-tight">An Analysis of RAG Strategies for Zuari Industries</h2>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 tracking-tight">An Interactive Analysis of RAG Strategies</h1>
             <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">From Foundational Pipelines to Knowledge Graphs: A visual exploration of architectural trade-offs and future directions.</p>
+            <!-- Author Information Added Here -->
+            <div class="mt-6 border-t pt-4 max-w-md mx-auto">
+                <p class="text-md font-semibold text-gray-700">Submitted By: Abdul Ahad Rauf</p>
+                <p class="text-sm text-gray-500">Roll No: 24BAMMA130 (MBA)</p>
+                <p class="text-sm text-gray-500">Summer Intern, Zuari Industries</p>
+            </div>
         </header>
 
         <nav class="sticky top-0 bg-white/80 backdrop-blur-md z-10 border-b mb-12">
@@ -124,14 +129,14 @@
 
                 <div class="mt-16">
                      <div class="text-center mb-8">
-                        <h3 class="text-2xl font-bold text-gray-800">Feature Matrix</h3>
-                        <p class="mt-2 text-md text-gray-600 max-w-2xl mx-auto">Select a strategy to see a detailed breakdown of its architecture and key features.</p>
-                         <div id="table-controls" class="mt-4 flex justify-center space-x-2">
-                             <button data-strategy="s1" class="px-4 py-2 text-sm font-medium rounded-md bg-indigo-100 text-indigo-700">Full-Stack App</button>
-                             <button data-strategy="s2" class="px-4 py-2 text-sm font-medium rounded-md bg-gray-200 text-gray-700">Metadata-Enriched</button>
-                             <button data-strategy="s3" class="px-4 py-2 text-sm font-medium rounded-md bg-gray-200 text-gray-700">GraphRAG</button>
-                         </div>
-                    </div>
+                         <h3 class="text-2xl font-bold text-gray-800">Feature Matrix</h3>
+                         <p class="mt-2 text-md text-gray-600 max-w-2xl mx-auto">Select a strategy to see a detailed breakdown of its architecture and key features.</p>
+                          <div id="table-controls" class="mt-4 flex justify-center space-x-2">
+                               <button data-strategy="s1" class="px-4 py-2 text-sm font-medium rounded-md bg-indigo-100 text-indigo-700">Full-Stack App</button>
+                               <button data-strategy="s2" class="px-4 py-2 text-sm font-medium rounded-md bg-gray-200 text-gray-700">Metadata-Enriched</button>
+                               <button data-strategy="s3" class="px-4 py-2 text-sm font-medium rounded-md bg-gray-200 text-gray-700">GraphRAG</button>
+                          </div>
+                     </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full bg-white border rounded-lg shadow-sm">
                             <thead class="bg-gray-50">
@@ -144,6 +149,31 @@
                                 <!-- JS will populate this -->
                             </tbody>
                         </table>
+                    </div>
+                </div>
+
+                <!-- Video Demonstrations Section Added Here -->
+                <div class="mt-16">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold text-gray-800">Application Demonstrations</h3>
+                        <p class="mt-2 text-md text-gray-600 max-w-2xl mx-auto">Watch these short videos to see the different RAG strategies in action.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Video 1 -->
+                        <a href="#" class="block bg-white p-6 rounded-lg shadow-sm border hover:shadow-lg hover:border-indigo-300 transition-all group">
+                            <h4 class="text-lg font-semibold text-indigo-700 group-hover:text-indigo-800">Demo 1: Full-Stack App Walkthrough</h4>
+                            <p class="mt-2 text-sm text-gray-600">A demonstration of the personalized assistant and its ability to analyze user-uploaded documents and CSV files.</p>
+                        </a>
+                        <!-- Video 2 -->
+                        <a href="#" class="block bg-white p-6 rounded-lg shadow-sm border hover:shadow-lg hover:border-teal-300 transition-all group">
+                            <h4 class="text-lg font-semibold text-teal-700 group-hover:text-teal-800">Demo 2: Metadata-Enriched Precision</h4>
+                            <p class="mt-2 text-sm text-gray-600">See how adding metadata improves search results when querying dense technical manuals.</p>
+                        </a>
+                        <!-- Video 3 -->
+                        <a href="#" class="block bg-white p-6 rounded-lg shadow-sm border hover:shadow-lg hover:border-amber-400 transition-all group">
+                            <h4 class="text-lg font-semibold text-amber-700 group-hover:text-amber-800">Demo 3: Discovering with GraphRAG</h4>
+                            <p class="mt-2 text-sm text-gray-600">An example of how GraphRAG uncovers hidden relationships across multiple documents for complex research questions.</p>
+                        </a>
                     </div>
                 </div>
             </section>
@@ -205,9 +235,9 @@
             <!-- Strategy 2: Metadata-Enriched -->
             <section id="strategy2" class="content-section">
                  <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-gray-800">Strategy 2: Metadata-Enriched Retrieval</h2>
-                    <p class="mt-2 text-md text-gray-600 max-w-2xl mx-auto">This strategy enhances the data *before* it's queried, using an LLM to add rich metadata to each text chunk, thereby improving retrieval precision.</p>
-                </div>
+                     <h2 class="text-3xl font-bold text-gray-800">Strategy 2: Metadata-Enriched Retrieval</h2>
+                     <p class="mt-2 text-md text-gray-600 max-w-2xl mx-auto">This strategy enhances the data *before* it's queried, using an LLM to add rich metadata to each text chunk, thereby improving retrieval precision.</p>
+                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                     <div class="bg-white p-6 rounded-lg shadow-sm border">
                         <h3 class="text-xl font-semibold mb-4">Enriched Ingestion Pipeline (LlamaIndex)</h3>
