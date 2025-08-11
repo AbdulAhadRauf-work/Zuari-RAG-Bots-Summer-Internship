@@ -9,15 +9,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals with Subtle Accents -->
-    <!-- Application Structure Plan: The application is structured as a narrative journey through the RAG strategies. It starts with a high-level comparison dashboard, allowing users to get an immediate sense of the trade-offs. From there, users can navigate to dedicated sections for each of the three core strategies for a "deep dive." Each deep-dive section presents the architecture visually and explains its key innovations and trade-offs. The final section visualizes the strategic roadmap. This structure was chosen to cater to two user types: the executive who wants a quick overview (the dashboard) and the technical user who wants to understand the implementation details (the deep dives). The flow is logical, moving from comparison to detail to future planning. -->
-    <!-- Visualization & Content Choices: 
-         1. Report Info: Comparative analysis of RAG strategies. Goal: Compare. Viz/Method: Interactive Radar Chart (Chart.js) and a dynamic HTML table. Interaction: Hovering over the chart reveals details, and buttons toggle the visible strategy in the table. Justification: A radar chart is excellent for comparing multiple entities across multiple quantitative axes (complexity, latency, etc.). The interactive table allows for focused, side-by-side text comparison. Library: Chart.js.
-         2. Report Info: Individual RAG architectures (Full-Stack, Metadata, GraphRAG). Goal: Organize/Inform. Viz/Method: Flow diagrams built with structured HTML and Tailwind CSS. Interaction: Key components are highlighted on hover to display tooltips with more information. Justification: HTML/CSS diagrams are lightweight, responsive, and avoid the SVG constraint, while providing a clear visual flow of the architecture. Library: Vanilla JS for interaction.
-         3. Report Info: Strategic Roadmap (Phased development). Goal: Change/Organize. Viz/Method: An interactive timeline created with HTML/CSS. Interaction: Clicking on a phase reveals detailed action items and expected outcomes. Justification: A timeline is the most intuitive way to represent a phased plan. Interactivity keeps the UI clean, showing details on demand. Library: Vanilla JS.
-         4. Report Info: Key trade-offs (e.g., Indexing Overhead vs. Retrieval Quality). Goal: Compare. Viz/Method: Bar Chart (Chart.js). Interaction: Tooltips on bars provide exact values and context. Justification: Bar charts are simple and effective for direct comparison of quantitative metrics like cost and performance. Library: Chart.js.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -99,7 +90,6 @@
                     <a class="nav-link" data-target="strategy1">Full-Stack App</a>
                     <a class="nav-link" data-target="strategy2">Metadata-Enriched</a>
                     <a class="nav-link" data-target="strategy3">GraphRAG</a>
-                    <a class="nav-link" data-target="roadmap">Roadmap</a>
                 </div>
             </div>
         </nav>
@@ -333,83 +323,7 @@
                 </div>
             </section>
 
-            <!-- Roadmap Section -->
-            <section id="roadmap" class="content-section">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-gray-800">Strategic Roadmap for a Unified Architecture</h2>
-                    <p class="mt-2 text-md text-gray-600 max-w-2xl mx-auto">A proposed three-phase plan to synthesize the best elements of all strategies into a single, state-of-the-art system. Click on each phase to see details.</p>
-                </div>
-
-                <div class="relative">
-                    <!-- Timeline line -->
-                    <div class="absolute left-1/2 -ml-px w-0.5 h-full bg-gray-300"></div>
-                    
-                    <div class="space-y-16">
-                        <!-- Phase 1 -->
-                        <div class="relative phase-card-container">
-                            <div class="md:flex items-center md:space-x-8">
-                                <div class="md:w-1/2"></div>
-                                <div class="md:w-1/2">
-                                    <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 phase-card cursor-pointer" data-phase="1">
-                                        <div class="flex justify-between items-center">
-                                            <h3 class="text-xl font-bold text-indigo-600">Phase 1: Foundational Integration</h3>
-                                            <span class="text-2xl">⚙️</span>
-                                        </div>
-                                        <p class="mt-2 text-gray-600">Merge the core components into a single, stable, end-to-end system.</p>
-                                        <div id="phase-1-details" class="mt-4 text-sm text-gray-500 hidden">
-                                            <p><span class="font-semibold">Action:</span> Integrate GraphRAG indexing into the FastAPI app.</p>
-                                            <p><span class="font-semibold">Action:</span> Modify the query endpoint to use the hybrid graph retrieval process.</p>
-                                            <p><span class="font-semibold">Outcome:</span> A functional prototype serving graph-based answers through the Streamlit UI.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Phase 2 -->
-                         <div class="relative phase-card-container">
-                            <div class="md:flex items-center md:space-x-8">
-                                <div class="md:w-1/2">
-                                    <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 phase-card cursor-pointer" data-phase="2">
-                                        <div class="flex justify-between items-center">
-                                            <h3 class="text-xl font-bold text-teal-600">Phase 2: Optimization & Evaluation</h3>
-                                            <span class="text-2xl">📊</span>
-                                        </div>
-                                        <p class="mt-2 text-gray-600">Aggressively tackle performance and quality challenges with robust testing.</p>
-                                         <div id="phase-2-details" class="mt-4 text-sm text-gray-500 hidden">
-                                            <p><span class="font-semibold">Action:</span> Optimize indexing overhead (batching, faster models).</p>
-                                            <p><span class="font-semibold">Action:</span> Implement a formal evaluation framework (Precision, Recall, Faithfulness).</p>
-                                            <p><span class="font-semibold">Outcome:</span> An optimized system with quantitative evidence of its effectiveness.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="md:w-1/2"></div>
-                            </div>
-                        </div>
-
-                        <!-- Phase 3 -->
-                         <div class="relative phase-card-container">
-                            <div class="md:flex items-center md:space-x-8">
-                                <div class="md:w-1/2"></div>
-                                <div class="md:w-1/2">
-                                    <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 phase-card cursor-pointer" data-phase="3">
-                                        <div class="flex justify-between items-center">
-                                            <h3 class="text-xl font-bold text-amber-600">Phase 3: Advanced Feature Development</h3>
-                                            <span class="text-2xl">🚀</span>
-                                        </div>
-                                        <p class="mt-2 text-gray-600">Build out intelligence-driven features that leverage the unified architecture.</p>
-                                        <div id="phase-3-details" class="mt-4 text-sm text-gray-500 hidden">
-                                            <p><span class="font-semibold">Action:</span> Develop a dynamic, LLM-guided graph traversal agent.</p>
-                                            <p><span class="font-semibold">Action:</span> Formalize a multi-tool engine for choosing the best analysis method (Graph, CSV, etc.).</p>
-                                            <p><span class="font-semibold">Outcome:</span> A true reasoning engine that can select the right tool for any task.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+         
         </main>
     </div>
 
