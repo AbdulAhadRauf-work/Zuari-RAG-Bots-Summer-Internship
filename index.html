@@ -66,6 +66,24 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
+        /* Styles for responsive video embeds */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            border-radius: 0.375rem; /* Tailwind's rounded-md */
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -122,9 +140,9 @@
                          <h3 class="text-2xl font-bold text-gray-800">Feature Matrix</h3>
                          <p class="mt-2 text-md text-gray-600 max-w-2xl mx-auto">Select a strategy to see a detailed breakdown of its architecture and key features.</p>
                           <div id="table-controls" class="mt-4 flex justify-center space-x-2">
-                               <button data-strategy="s1" class="px-4 py-2 text-sm font-medium rounded-md bg-indigo-100 text-indigo-700">Full-Stack App</button>
-                               <button data-strategy="s2" class="px-4 py-2 text-sm font-medium rounded-md bg-gray-200 text-gray-700">Metadata-Enriched</button>
-                               <button data-strategy="s3" class="px-4 py-2 text-sm font-medium rounded-md bg-gray-200 text-gray-700">GraphRAG</button>
+                                <button data-strategy="s1" class="px-4 py-2 text-sm font-medium rounded-md bg-indigo-100 text-indigo-700">Full-Stack App</button>
+                                <button data-strategy="s2" class="px-4 py-2 text-sm font-medium rounded-md bg-gray-200 text-gray-700">Metadata-Enriched</button>
+                                <button data-strategy="s3" class="px-4 py-2 text-sm font-medium rounded-md bg-gray-200 text-gray-700">GraphRAG</button>
                           </div>
                      </div>
                     <div class="overflow-x-auto">
@@ -142,7 +160,7 @@
                     </div>
                 </div>
 
-                <!-- Video Demonstrations Section Added Here -->
+                <!-- Video Demonstrations Section Updated -->
                 <div class="mt-16">
                     <div class="text-center mb-8">
                         <h3 class="text-2xl font-bold text-gray-800">Application Demonstrations</h3>
@@ -150,20 +168,30 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <!-- Video 1 -->
-                        <a href="#" class="block bg-white p-6 rounded-lg shadow-sm border hover:shadow-lg hover:border-indigo-300 transition-all group">
-                            <h4 class="text-lg font-semibold text-indigo-700 group-hover:text-indigo-800">Demo 1: Full-Stack App Walkthrough</h4>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border flex flex-col">
+                            <div class="video-container mb-4">
+                                 <iframe src="https://drive.google.com/file/d/1RjZquirFIiIee2bOXVHGjz40vHKIutj-/preview" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-lg font-semibold text-indigo-700">Demo 1: Full-Stack App Walkthrough</h4>
                             <p class="mt-2 text-sm text-gray-600">A demonstration of the personalized assistant and its ability to analyze user-uploaded documents and CSV files.</p>
-                        </a>
+                        </div>
                         <!-- Video 2 -->
-                        <a href="#" class="block bg-white p-6 rounded-lg shadow-sm border hover:shadow-lg hover:border-teal-300 transition-all group">
-                            <h4 class="text-lg font-semibold text-teal-700 group-hover:text-teal-800">Demo 2: Metadata-Enriched Precision</h4>
-                            <p class="mt-2 text-sm text-gray-600">See how adding metadata improves search results when querying dense technical manuals.</p>
-                        </a>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border flex flex-col">
+                             <div class="video-container mb-4">
+                                 <iframe src="https://drive.google.com/file/d/1oDKkAaKc77QeNv5bJkGIZHhAoehNRvNL/preview" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-lg font-semibold text-teal-700">Demo 2: Metadata-Enriched Precision</h4>
+                            <p class="mt-2 text-sm text-gray-600">See how Meta data re-structuring can improve results when querying dense technical manuals using llama_index.
+                            </p>
+                        </div>
                         <!-- Video 3 -->
-                        <a href="#" class="block bg-white p-6 rounded-lg shadow-sm border hover:shadow-lg hover:border-amber-400 transition-all group">
-                            <h4 class="text-lg font-semibold text-amber-700 group-hover:text-amber-800">Demo 3: Discovering with GraphRAG</h4>
-                            <p class="mt-2 text-sm text-gray-600">An example of how GraphRAG uncovers hidden relationships across multiple documents for complex research questions.</p>
-                        </a>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border flex flex-col">
+                             <div class="video-container mb-4">
+                                 <iframe src="https://drive.google.com/file/d/1EHLHahGx2QMxw162mUTPh5sE9UvdOG3R/preview" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-lg font-semibold text-amber-700">Demo 3: API Calling</h4>
+                            <p class="mt-2 text-sm text-gray-600">Another version that demonstrates API and documentation</p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -323,7 +351,7 @@
                 </div>
             </section>
 
-         
+        
         </main>
     </div>
 
@@ -440,14 +468,14 @@
                     labels: ['Context Quality', 'Indexing Complexity', 'Query Latency', 'Architectural Complexity', 'Flexibility', 'Precision/Richness'],
                     datasets: [{
                         label: 'Full-Stack App',
-                        data: [4, 2, 2, 3, 8, 4],
+                        data: [7, 5, 5, 6, 10, 7],
                         fill: true,
                         backgroundColor: 'rgba(79, 70, 229, 0.2)',
                         borderColor: 'rgb(79, 70, 229)',
                         pointBackgroundColor: 'rgb(79, 70, 229)',
                     }, {
                         label: 'Metadata-Enriched',
-                        data: [7, 8, 2, 5, 5, 8],
+                        data: [7, 8, 7, 5, 5, 8],
                         fill: true,
                         backgroundColor: 'rgba(13, 148, 136, 0.2)',
                         borderColor: 'rgb(13, 148, 136)',
